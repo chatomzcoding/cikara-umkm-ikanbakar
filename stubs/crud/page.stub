@@ -1,0 +1,4 @@
+<x-lineone menu="master">
+    <x-header title="%%PLURAL_LABEL%%" description="Kelola data %%PLURAL_LABEL%%" />
+    <livewire:%%COMPONENT_NAME%%.index />
+</x-lineone>

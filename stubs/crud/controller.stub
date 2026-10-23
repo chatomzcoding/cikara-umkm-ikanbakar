@@ -1,0 +1,17 @@
+<?php
+
+namespace %%CONTROLLER_NAMESPACE%%;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use %%MODEL_NAMESPACE%%\%%MODEL_CLASS%%;
+
+class %%MODEL_CLASS%%Controller extends Controller
+{
+    public function index()
+    {
+        Gate::authorize('viewAny', %%MODEL_CLASS%%::class);
+
+        return view('%%VIEW_NAME%%');
+    }
+}

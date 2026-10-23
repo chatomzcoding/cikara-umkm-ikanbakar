@@ -1,0 +1,140 @@
+<?php
+
+%%IMPORT_USE%%use App\Livewire\Concerns\WithCrudTable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Component;
+use %%MODEL_NAMESPACE%%\%%MODEL_CLASS%%;
+
+new class extends Component
+{
+%%IMPORT_TRAIT%%    use WithCrudTable;
+
+    public $id;
+    public $leftComponent;
+
+    public function mount(): void
+    {
+        Gate::authorize('viewAny', %%MODEL_CLASS%%::class);
+        $this->sortField = $this->crudDefaultSortField();
+    }
+
+    protected function crudModelClass(): string
+    {
+        return %%MODEL_CLASS%%::class;
+    }
+
+    protected function crudSortableFields(): array
+    {
+        return ['%%SORTABLE_FIELDS%%'];
+    }
+
+    protected function crudDefaultSortField(): string
+    {
+        return '%%SORT_FIELD%%';
+    }
+
+    protected function crudExportPermission(): string
+    {
+        return '%%PERMISSION%%.export';
+    }
+
+    protected function crudUsesSoftDeletes(): bool
+    {
+        return %%USES_SOFT_DELETES%%;
+    }
+
+    protected function crudExportColumns(): array
+    {
+        return [
+%%EXPORT_COLUMNS%%
+        ];
+    }
+
+%%IMPORT_METHODS%%    protected function crudPdfTitle(): string
+    {
+        return 'Daftar %%PLURAL_LABEL%%';
+    }
+
+    // Pengaturan cetak PDF lain (hapus komentar bila perlu):
+    // protected function crudPdfSubtitle(): ?string { return 'Tahun Ajaran 2026/2027'; }
+    // protected function crudPdfOrientation(): string { return 'landscape'; }
+    // protected function crudPdfPaper(): string { return 'f4'; }
+    // protected function crudPdfView(): string { return 'exports.%%RESOURCE%%'; }
+    // protected function crudPdfColumns(): array { return ['Nama' => 'nama']; }
+
+    protected function crudFilteredQuery(): Builder
+    {
+        $query = %%MODEL_CLASS%%::query()->search($this->search);
+
+        return $this->applySorting(%%QUERY_TRASH%%);
+    }
+
+    #[Computed]
+    public function items()
+    {
+        return $this->crudFilteredQuery()->paginate($this->perPage);
+    }
+
+    public function buttonEdit(int|string $id): void
+    {
+        Gate::authorize('update', %%MODEL_CLASS%%::findOrFail($id));
+        $this->leftComponent = '%%COMPONENT_NAME%%.form';
+        $this->dispatch('%%COMPONENT_NAME%%-edit', $id);
+    }
+
+    #[On('handle-form')]
+    public function handleForm(): void
+    {
+        $this->resetPage();
+    }
+};
+?>
+
+<div x-data="{ openForm: false }" x-on:handle-form.window="openForm = false">
+    <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+        <div class="col-span-12 lg:col-span-4" x-show="openForm" x-cloak>@include('layouts.form')</div>
+        <div class="col-span-12" :class="openForm ? 'lg:col-span-8' : 'lg:col-span-12'">
+            <div class="card">
+                <div class="flex items-center justify-between border-b border-slate-200 p-4 dark:border-navy-500 sm:px-5">
+                    <h2 class="font-medium">Daftar %%PLURAL_LABEL%%</h2>
+                    @can('create', %%MODEL_NAMESPACE%%\%%MODEL_CLASS%%::class)
+                        <button type="button" class="btn h-8 gap-1.5 bg-primary px-3 text-white" @click="openForm = true" wire:click="$set('leftComponent', '%%COMPONENT_NAME%%.form')"><svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Tambah</button>
+                    @endcan
+                </div>
+                <div class="space-y-4 p-4 sm:p-5">
+                    <x-crud.toolbar%%TOOLBAR_EXPORT%%%%TOOLBAR_IMPORT%% :show-trash="%%SHOW_TRASH%%" />
+%%BULK_ACTIONS%%
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead><tr>
+                                <th class="w-10 bg-slate-200 px-3 py-3 text-center dark:bg-navy-800">%%SELECTION_HEADER%%</th>
+%%TABLE_HEADERS%%
+%%TRASH_STATUS_HEADER%%
+                                <th class="bg-slate-200 px-4 py-3 text-center font-semibold uppercase dark:bg-navy-800">Aksi</th>
+                            </tr></thead>
+                            <tbody>
+                                @forelse ($this->items as $item)
+                                    <tr wire:key="%%RESOURCE%%-{{ $item->id }}" class="border-b border-slate-200 dark:border-navy-500">
+                                        <td class="px-3 py-3 text-center">%%SELECTION_CELL%%</td>
+%%TABLE_CELLS%%
+%%TRASH_STATUS_CELL%%
+                                        <td class="px-4 py-3 text-center">
+%%ROW_ACTIONS%%
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <x-crud.empty-state colspan="%%COLSPAN%%" message="Data tidak ditemukan." />
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    {{ $this->items->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

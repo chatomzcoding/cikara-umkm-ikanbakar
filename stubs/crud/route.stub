@@ -1,0 +1,10 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use %%CONTROLLER_NAMESPACE%%\%%MODEL_CLASS%%Controller;
+
+Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('%%ROUTE_URI%%', [%%MODEL_CLASS%%Controller::class, 'index'])
+        %%PERMISSION_MIDDLEWARE%%
+        ->name('%%ROUTE_NAME%%');
+});

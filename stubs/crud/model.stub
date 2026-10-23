@@ -1,0 +1,27 @@
+<?php
+
+namespace %%MODEL_NAMESPACE%%;
+
+%%AUDIT_IMPORT%%%%ULID_IMPORT%%
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+%%SOFT_DELETE_IMPORT%%
+class %%MODEL_CLASS%% extends Model
+{
+%%AUDIT_TRAIT%%%%ULID_TRAIT%%%%SOFT_DELETE_TRAIT%%
+    protected $fillable = [
+%%FILLABLE%%
+    ];
+
+    protected function casts(): array
+    {
+        return [
+%%CASTS%%
+        ];
+    }
+
+    public function scopeSearch(Builder $query, ?string $search): Builder
+    {
+%%SEARCH_BODY%%
+    }
+}

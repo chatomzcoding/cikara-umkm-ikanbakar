@@ -1,0 +1,10 @@
+<?php
+
+return [
+    '%%PERMISSION%%' => [
+        'label' => '%%PLURAL_LABEL%%',
+        'permissions' => [
+%%PERMISSIONS_ARRAY%%
+        ],
+    ],
+];

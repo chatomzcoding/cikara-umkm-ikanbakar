@@ -1,0 +1,1 @@
+window.addEventListener("app:mounted",function(){var e=document.querySelector("#flatpickr1");e._datetimepicker=flatpickr(e,{enableTime:!0});var i=document.querySelector("#flatpickr2");i._datetimepicker=flatpickr(i,{enableTime:!0,minTime:"16:00",maxTime:"22:00"})},{once:!0});

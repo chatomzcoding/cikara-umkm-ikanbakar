@@ -1,0 +1,11 @@
+<?php
+
+use %%MODEL_NAMESPACE%%\%%MODEL_CLASS%%;
+
+test('model %%MODEL_LABEL%% dapat menyimpan data', function () {
+    $model = %%MODEL_CLASS%%::query()->create([
+%%TEST_VALUES%%
+    ]);
+
+    expect($model->exists)->toBeTrue();%%SOFT_DELETE_TEST%%
+});

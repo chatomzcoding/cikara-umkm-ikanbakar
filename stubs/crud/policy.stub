@@ -1,0 +1,14 @@
+<?php
+
+namespace %%POLICY_NAMESPACE%%;
+
+use App\Models\User;
+use App\Policies\Concerns\ChecksPermissions;
+use %%MODEL_NAMESPACE%%\%%MODEL_CLASS%%;
+
+class %%MODEL_CLASS%%Policy
+{
+    use ChecksPermissions;
+
+%%POLICY_BODY%%
+}
